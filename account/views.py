@@ -1,4 +1,7 @@
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
+
+from ePrescribe.models import Patient
 from .forms import SignUpForm, LoginForm
 from django.views.generic import View
 from django.contrib.auth import authenticate, login, logout
@@ -16,7 +19,11 @@ def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            form.instance.is_patient = True
+            form.instance.password = make_password(form.instance.password)
+            PatientProfile = Patient.objects.create(username=form.instance.username, password=form.instance.password)
+            PatientProfile.save()
+            form.save(commit=True)
             msg = 'user created'
             return redirect('login_view')
         else:

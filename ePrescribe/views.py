@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.hashers import make_password
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -178,6 +179,11 @@ class DoctorCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.admin = self.request.user
         form.instance.practice_number = form.instance.med_practice.reference
+        form.instance.password = make_password(form.instance.password)
+        UserProfile = User.objects.create(username=form.instance.username,password=form.instance.password,
+                            first_name=form.instance.name,last_name=form.instance.surname,is_doctor=True)
+        UserProfile.save()
+        form.save(commit=True)
         return super().form_valid(form)
     
     
@@ -188,11 +194,13 @@ class DoctorDetailView(DetailView):
     
 class DoctorUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Doctor
-    form_class = DoctorForm
+    form_class = DoctorUpdateForm
     template_name = 'create.html'
     
     def form_valid(self, form):
         form.instance.admin = self.request.user
+        form.instance.password = make_password(form.instance.password)
+        UserProfile = User.objects.update(first_name=form.instance.name,last_name=form.instance.surname)
         return super().form_valid(form)
 
     def test_func(self):
@@ -277,6 +285,11 @@ class PharmacistCreate(LoginRequiredMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.admin = self.request.user
+        form.instance.password = make_password(form.instance.password)
+        UserProfile = User.objects.create(username=form.instance.username,password=form.instance.password,
+                            first_name=form.instance.name,last_name=form.instance.surname,is_pharmacist=True)
+        UserProfile.save()
+        form.save(commit=True)
         return super().form_valid(form)
     
     
@@ -287,11 +300,13 @@ class PharmacistDetailView(DetailView):
     
 class PharmacistUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Pharmacist
-    form_class = PharmacistForm
+    form_class = PharmacistUpdateForm
     template_name = 'create.html'
     
     def form_valid(self, form):
         form.instance.admin = self.request.user
+        form.instance.password = make_password(form.instance.password)
+        UserProfile = User.objects.update(first_name=form.instance.name,last_name=form.instance.surname)
         return super().form_valid(form)
 
     def test_func(self):
@@ -422,10 +437,15 @@ class PatientListView(ListView):
 class PatientCreate(LoginRequiredMixin, CreateView):
     model = Patient
     form_class = PatientForm
-    template_name = 'create.html'
+    template_name = 'patient/registerpatient.html'
     
     def form_valid(self, form):
         form.instance.admin = self.request.user
+        form.instance.password = make_password(form.instance.password)
+        UserProfile = User.objects.create(username=form.instance.username,password=form.instance.password,
+                            first_name=form.instance.name,last_name=form.instance.surname,is_patient=True)
+        UserProfile.save()
+        form.save(commit=True)
         return super().form_valid(form)
     
     
@@ -436,10 +456,13 @@ class PatientDetailView(DetailView):
     
 class PatientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Patient
-    form_class = PatientForm
-    template_name = 'create.html'
+    form_class = PatientUpdateForm
+    template_name = 'patient/registerpatient.html'
     
     def form_valid(self, form):
+        form.instance.admin = self.request.user
+        form.instance.password = make_password(form.instance.password)
+        UserProfile = User.objects.update(first_name=form.instance.name,last_name=form.instance.surname)
         return super().form_valid(form)
 
     def test_func(self):

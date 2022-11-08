@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'ePrescribe',
     'account',
     'django_filters',
-    
+    'phonenumber_field',
     
 ]
 

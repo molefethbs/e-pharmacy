@@ -20,7 +20,19 @@ class DoctorForm(forms.ModelForm):
 
     class Meta:
         model = Doctor
-        fields = ('name', 'surname', 'contact_number', 'email', 'qualification', 'med_practice', 'hc_reg_number')
+        fields = ('name', 'surname', 'username','password','contact_number', 'email', 'qualification', 'med_practice', 'hc_reg_number')
+
+
+class DoctorUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DoctorUpdateForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = Doctor
+        fields = ('name', 'surname','contact_number', 'email', 'qualification', 'med_practice', 'hc_reg_number')
+
 
 
 class PharmacyForm(forms.ModelForm):
@@ -41,7 +53,17 @@ class PatientForm(forms.ModelForm):
 
     class Meta:
         model = Patient
-        fields = ('name', 'surname', 'id_number', 'address','city','suburb','postal_code','province', 'contact_number', 'email', 'dob','gender')
+        fields = ('name', 'surname', 'id_number','username','password', 'address','city','suburb','postal_code','province', 'contact_number', 'email', 'dob','gender')
+
+class PatientUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PatientUpdateForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = Patient
+        fields = ('name', 'surname', 'id_number','address','city','suburb','postal_code','province', 'contact_number', 'email', 'dob','gender')
 
 
 class PharmacistForm(forms.ModelForm):
@@ -52,7 +74,18 @@ class PharmacistForm(forms.ModelForm):
 
     class Meta:
         model = Pharmacist
-        fields = ('name', 'surname', 'contact_number', 'email', 'reg_number', 'pharmacy_id')
+        fields = ('name', 'surname', 'username','password','contact_number', 'email', 'reg_number', 'pharmacy')
+
+class PharmacistUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PharmacistUpdateForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = Pharmacist
+        fields = ('name', 'surname','contact_number', 'email', 'reg_number', 'pharmacy')
+
 
 class ActiveIngredientsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

@@ -1,4 +1,6 @@
 from email.policy import default
+from phonenumber_field.modelfields import PhoneNumberField
+
 from account.models import User
 from django.db import models
 from django.utils import timezone
@@ -105,14 +107,16 @@ class MedPractice(models.Model):
 
 class Doctor(models.Model):
     admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="admin_doctor")
-    name = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="doctor", default="")
+    name = models.CharField(max_length=200)
     surname = models.CharField(max_length=200)
-    contact_number = models.CharField(max_length=20)
+    contact_number = PhoneNumberField()
     email = models.EmailField(max_length=200)
     qualification = models.CharField(max_length=200)
     med_practice = models.ForeignKey(MedPractice, to_field='reference', on_delete=models.CASCADE)
     practice_number = models.CharField(max_length=20)
     hc_reg_number = models.CharField(max_length=20)
+    username = models.CharField(max_length=200)
+    password = models.CharField(max_length=200)
     date = models.DateField(default=timezone.now)
 
     def __str__(self):
@@ -145,12 +149,14 @@ class Pharmacy(models.Model):
 
 class Pharmacist(models.Model):
     admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="pharm_admin", default="")
-    name = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="pharm", default="")
+    name = models.CharField(max_length=200)
     surname = models.CharField(max_length=200)
-    contact_number = models.CharField(max_length=20)
+    contact_number = PhoneNumberField()
     email = models.EmailField(max_length=200)
     reg_number = models.CharField(max_length=200)
-    pharmacy_id = models.ForeignKey(Pharmacy, on_delete=models.CASCADE)
+    pharmacy = models.ForeignKey(Pharmacy, on_delete=models.CASCADE)
+    username = models.CharField(max_length=200)
+    password = models.CharField(max_length=200)
     date = models.DateField(default=timezone.now)
     
     def __str__(self):
@@ -204,18 +210,20 @@ class Medication(models.Model):
         return reverse('medication-list')
 
 class Patient(models.Model):
-    admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="admin", default="")
-    name = models.CharField(max_length=200)
-    surname = models.CharField(max_length=200)
-    id_number = models.CharField(max_length=20)
-    address = models.CharField(max_length=200)
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
-    suburb = models.ForeignKey(Suburb, on_delete=models.PROTECT)
-    postal_code = models.CharField(max_length=5)
-    province = models.ForeignKey(Province, on_delete=models.PROTECT)
-    contact_number = models.CharField(max_length=20)
-    email = models.EmailField(max_length=200)
-    dob = models.DateField()
+    admin = models.CharField(max_length=1,null=True,blank=True)
+    name = models.CharField(max_length=200,null=True,blank=True)
+    username = models.CharField(max_length=200)
+    password = models.CharField(max_length=200)
+    surname = models.CharField(max_length=200,null=True,blank=True)
+    id_number = models.CharField(max_length=20,null=True,blank=True)
+    address = models.CharField(max_length=200,null=True,blank=True)
+    city = models.ForeignKey(City, on_delete=models.PROTECT,null=True,blank=True)
+    suburb = models.ForeignKey(Suburb, on_delete=models.PROTECT,null=True,blank=True)
+    postal_code = models.CharField(max_length=5,null=True,blank=True)
+    province = models.ForeignKey(Province, on_delete=models.PROTECT,null=True,blank=True)
+    contact_number = PhoneNumberField(null=True,blank=True)
+    email = models.EmailField(max_length=200,null=True,blank=True)
+    dob = models.DateField(null=True,blank=True)
     date = models.DateField(default=timezone.now)
     gender = models.CharField(max_length=6,choices=gender,default="Male")
 

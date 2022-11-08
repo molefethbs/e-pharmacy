@@ -11,7 +11,9 @@
         <br><br>
     {% endfor %}
     <div class="pharmacist_action">
+        {% if user.is_admin %}
         <a href="{% url 'pharmacist-create' %}" class="btn btn-primary"> Add Pharmacist</a>
+        {% endif %}
     </div>
     <br>
     <div class="table-responsive">
@@ -22,6 +24,7 @@
         <th>Email</th>
         <th>Registration Number</th>
         <th>Pharmacy Name</th>
+        <th>Username</th>
         <th>Action</th>
 
         <tbody>
@@ -33,7 +36,8 @@
                 <td>{{pharm.contact_number}}</td>
                 <td>{{pharm.email}}</td>
                 <td>{{pharm.reg_number}}</td>
-                <td>{{pharm.pharmacy_id}}</td>
+                <td>{{pharm.pharmacy}}</td>
+                <td>{{pharm.username}}</td>
                 <td>
                     <a href="{% url 'pharmacist-update' pharm.id %}" class="btn btn-info">Edit</a>
                     {% if user.is_admin %}
